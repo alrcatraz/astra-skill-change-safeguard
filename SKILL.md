@@ -1,43 +1,44 @@
 ---
 name: change-safeguard
-description: "修改系统前强制执行的保全检查与事后扫描：三层备份、环境基线记录、改后五点同类扫描。"
+description: "Mandatory pre-change safeguarding checks and post-change side-effect scan: three-tier backup, environment baseline recording, five-point post-change scan."
 category: devops
+version: 1.0.0
 ---
 
 # change-safeguard
 
 ## Trigger Conditions
 
-当任务涉及以下关键词时，本 skill 将被自动扫描命中：
-- 改配置、重启、升级、迁移、重构、删除
-- 修复、修改、调整、更换、安装、卸载
-- 任何可能改变系统状态的变更操作
+This skill is automatically loaded when the task involves:
+- Changing configuration, restarting, upgrading, migrating, refactoring, deleting
+- Fixing, modifying, adjusting, replacing, installing, uninstalling
+- Any operation that may alter system state
 
-## Checklist — 动手前
+## Checklist — Before the Change
 
-- [ ] **备份做了吗？**
-  - 服务器级别 → 跨机器备份（同一台机器的副本不是备份）
-  - 项目级别 → 出项目目录，或当前 git commit 已包含所有未提交工作
-  - 文件级别 → 留 .bak 文件，或 git commit
-- [ ] **环境基线记录了吗？**
-  - systemd 服务列表（`systemctl list-units --type=service`）
-  - 监听端口（`ss -tlnp`）
-  - Docker 容器状态
-  - 挂载点（`mount` / `df -h`）
-  - crontab 列表
-  - 网络配置（`ip addr`, `ip route`）
-  - 操作后逐项对比，差异即问题
+- [ ] **Is there a backup?**
+  - Server level → cross-machine backup (a copy on the same machine is not a backup)
+  - Project level → outside the project directory, or current git commit contains all uncommitted work
+  - File level → leave a `.bak` file, or git commit
+- [ ] **Has the environment baseline been recorded?**
+  - systemd service list (`systemctl list-units --type=service`)
+  - Listening ports (`ss -tlnp`)
+  - Docker container status
+  - Mount points (`mount` / `df -h`)
+  - crontab entries
+  - Network configuration (`ip addr`, `ip route`)
+  - Compare each item after the change — differences are problems
 
-## Checklist — 动手后
+## Checklist — After the Change
 
-- [ ] **根因定位：** 我是治标还是治本？问题为什么发生？
-- [ ] **同类扫描：** 系统其他地方有没有相同模式需要同步调整？
-- [ ] **副作用审查：** 这个变更是否无意中影响了别处？
-- [ ] **新暴露问题：** 调整后有没有揭露原来被掩盖的隐藏问题？
-- [ ] **残留清理：** 旧的配置、注释、回退路径是否还留着？
+- [ ] **Root cause:** Did I treat the symptom or the root cause? Why did the problem occur?
+- [ ] **Same-pattern scan:** Are there other places in the system with the same pattern that need adjustment?
+- [ ] **Side-effect review:** Did this change inadvertently affect something else?
+- [ ] **Newly exposed issues:** Did the adjustment reveal previously hidden problems?
+- [ ] **Residual cleanup:** Are old configurations, comments, or rollback paths still present?
 
 ## Pitfalls
 
-1. **不要把验证堆到最后一步。** 每一步完成后立即验证实际功能（不仅仅是 exit code 0）。
-2. **"改个小的不用备份"是个坑。** 任何变更都可能级联影响——小改动也要走基线记录。
-3. **仅检查目标是否达成就收工 = 只做了半套。** 五点扫描是完整闭环的必要部分。
+1. **Do not defer all verification to the final step.** Verify actual functionality (not just exit code 0) after each step.
+2. **"It's just a small change" is a trap.** Any change can have cascading effects — small changes still need a baseline record.
+3. **Checking only the target is only half the job.** The five-point scan is a necessary part of the closure loop.
