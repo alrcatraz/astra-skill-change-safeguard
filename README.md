@@ -1,4 +1,9 @@
 # astra-skill-change-safeguard
+<div align="center">
+
+[![License](https://badgen.net/github/license/alrcatraz/astra-skill-change-safeguard)](LICENSE) [![GitHub stars](https://badgen.net/github/stars/alrcatraz/astra-skill-change-safeguard)](https://github.com/alrcatraz/astra-skill-change-safeguard) [![GitHub last commit](https://badgen.net/github/last-commit/alrcatraz/astra-skill-change-safeguard)](https://github.com/alrcatraz/astra-skill-change-safeguard/commits)
+
+</div>
 
 Pre-change safeguarding checks and post-change side-effect scan for Hermes Agent. Provides three-tier backup strategy, environment baseline recording, and a five-point post-change scan.
 
@@ -20,9 +25,21 @@ cp SKILL.md ~/.hermes/profiles/default/skills/change-safeguard.md
 
 This skill has no external dependencies. Its checklist is self-contained.
 
+## Related
+
+- [astra-aiagent-infra](https://github.com/alrcatraz/astra-aiagent-infra) — ecosystem portal
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=alrcatraz/astra-skill-change-safeguard&type=date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=alrcatraz/astra-skill-change-safeguard&type=date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=alrcatraz/astra-skill-change-safeguard&type=date" width="600" />
+  </picture>
+</div>
 
 ---
 
