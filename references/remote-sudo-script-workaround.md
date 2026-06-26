@@ -27,49 +27,51 @@ Hermes terminal tool 的安全扫描会阻止任何包含 `sudo -S` 的命令（
 - 密码会出现在远程脚本中，用完及时清理
 - 如果使用 `-tt`（强制 PTY），sshpass 的 STDOUT 会混入终端控制字符，但不影响命令执行
 
-## 完整示例：远程安装 StorCLI
+## 完整示例：远程安装 StorCLI（已泛化）
+
+> 你的本地配置（跳板机地址、SSH 别名等）→ `references/sudo-local-config.md`。
 
 ### 场景
 
-- 目标：`192.168.100.181`（openSUSE Leap 16），需要通过 `10.20.2.14`（SUSET01）跳板
-- 凭据：`star / Admin@123`（SSH 和 sudo 相同）
+- 目标：`<target-ip>`（openSUSE Leap 16），需要通过 `<jump-ip>`（jump-host）跳板
+- 凭据：`<dest-user> / <password>`（SSH 和 sudo 相同）
 - StorCLI RPM 已通过 Broadcom 下载并解压
 
 ### Step 1：将 RPM 传到跳板
 
 ```bash
-scp storcli.rpm alrcatraz@10.20.2.14:/tmp/storcli.rpm
+scp storcli.rpm <jump-user>@<jump-ip>:/tmp/storcli.rpm
 ```
 
 ### Step 2：跳板 → 目标
 
 ```bash
-ssh alrcatraz@10.20.2.14 \
-  "sshpass -p 'Admin@123' scp /tmp/storcli.rpm star@192.168.100.181:/tmp/storcli.rpm"
+ssh <jump-user>@<jump-ip> \
+  "sshpass -p '<password>' scp /tmp/storcli.rpm <dest-user>@<target-ip>:/tmp/storcli.rpm"
 ```
 
 ### Step 3：创建安装脚本（用 write_file）
 
 ```bash
 #!/bin/bash
-sshpass -p 'Admin@123' ssh -tt -o StrictHostKeyChecking=no \
+sshpass -p '<password>' ssh -tt -o StrictHostKeyChecking=no \
   -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 \
-  star@192.168.100.181 \
-  'echo Admin@123 | /usr/bin/sudo -S rpm -ivh /tmp/storcli.rpm'
+  <dest-user>@<target-ip> \
+  'echo <password> | /usr/bin/sudo -S rpm -ivh /tmp/storcli.rpm'
 ```
 
 ### Step 4：SCP 到跳板并执行
 
 ```bash
-scp install.sh alrcatraz@10.20.2.14:/tmp/install.sh
-ssh alrcatraz@10.20.2.14 "bash /tmp/install.sh"
+scp install.sh <jump-user>@<jump-ip>:/tmp/install.sh
+ssh <jump-user>@<jump-ip> "bash /tmp/install.sh"
 ```
 
 ### 验证
 
 ```bash
-ssh alrcatraz@10.20.2.14 \
-  "sshpass -p 'Admin@123' ssh star@192.168.100.181 \
+ssh <jump-user>@<jump-ip> \
+  "sshpass -p '<password>' ssh <dest-user>@<target-ip> \
   '/opt/MegaRAID/storcli/storcli64 /c0 show'"
 ```
 
